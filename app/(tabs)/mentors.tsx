@@ -54,7 +54,7 @@ export default function MentorsScreen() {
       </View>
 
       {/* --- Vertical Mentor List --- */}
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: 40 }}>
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: 120 }}>
         {MENTORS_CATALOG.map((mentor) => (
           <View key={mentor.id} className="bg-white rounded-3xl p-5 mb-5 shadow-sm shadow-gray-200 border border-gray-100">
 
