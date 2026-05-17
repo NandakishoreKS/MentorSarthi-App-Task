@@ -46,3 +46,27 @@ MentorSarthiApp/
 ├── global.css                # Tailwind CSS entry point for Web support
 └── tailwind.config.js        # NativeWind theme & design system config
 ```
+🚀 Getting Started
+Prerequisites
+Ensure you have Node.js installed, along with the Expo CLI.
+
+Installation
+Clone the repository:
+
+Bash
+git clone <repository-url>
+Install dependencies:
+
+Bash
+npm install
+Start the development server (with cache cleared):
+
+Bash
+npx expo start -c
+Testing the App
+iOS / Android: Download the Expo Go app on your physical device and scan the QR code in the terminal.
+
+Web: Press w in the terminal to open the web bundler (Tailwind CSS fully supported).
+
+👨‍💻 Author
+Nandakishore KS Full Stack Developer & AI Engineer Passionate about building scalable products, complex motion design, and premium user experiences.
