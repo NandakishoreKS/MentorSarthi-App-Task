@@ -139,7 +139,7 @@ export default function MentorProfileScreen() {
                 </View>
                 <TouchableOpacity
                     className="bg-[#6B46C1] px-10 py-4 rounded-2xl shadow-lg shadow-purple-200"
-                    onPress={() => router.push('/checkout')}
+                    onPress={() => router.push('/mentor/checkout')}
                 >
                     <Text className="text-white font-bold text-lg">Book Session</Text>
                 </TouchableOpacity>

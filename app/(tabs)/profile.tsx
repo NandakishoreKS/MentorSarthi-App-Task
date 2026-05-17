@@ -1,10 +1,11 @@
 import { Ionicons } from '@expo/vector-icons';
 import { router } from 'expo-router';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function ProfileScreen() {
     return (
-        <SafeAreaView className="flex-1 bg-[#F9F5FF]">
+        <SafeAreaView className="flex-1 bg-[#F9F5FF]" edges={['top']}>
 
             {/* --- Header --- */}
             <View className="px-6 pt-4 pb-4 bg-white shadow-sm shadow-gray-200 z-10 rounded-b-3xl flex-row justify-between items-center">

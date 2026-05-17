@@ -1,9 +1,10 @@
 import { router } from 'expo-router';
-import { SafeAreaView, ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { ScrollView, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function RegisterScreen() {
     return (
-        <SafeAreaView className="flex-1 bg-[#F9F5FF]">
+        <SafeAreaView className="flex-1 bg-[#F9F5FF]" edges={['top']}>
             {/* ScrollView ensures the keyboard doesn't block the inputs on smaller phones */}
             <ScrollView contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 40 }}>
 

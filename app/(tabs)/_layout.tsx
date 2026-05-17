@@ -1,61 +1,74 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
-import { View } from 'react-native';
+import { Platform } from 'react-native';
 
-export default function TabLayout() {
+export default function TabsLayout() {
   return (
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarShowLabel: false,
-        tabBarActiveTintColor: '#1F2937', // Stark dark gray/black
-        tabBarInactiveTintColor: '#D1D5DB', // Faint muted gray
+        tabBarActiveTintColor: '#6B46C1',
+        tabBarInactiveTintColor: '#9CA3AF',
         tabBarStyle: {
           backgroundColor: '#FFFFFF',
-          borderTopWidth: 0, // Removes the harsh top line
-          elevation: 15,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -10 },
-          shadowOpacity: 0.03, // Ultra-soft shadow
-          shadowRadius: 20,
-          height: 85,
+          borderTopWidth: 1,
+          borderTopColor: '#F3F4F6',
+          height: Platform.OS === 'ios' ? 85 : 70,
+          paddingBottom: Platform.OS === 'ios' ? 30 : 10,
           paddingTop: 10,
+          elevation: 10,
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: -4 },
+          shadowOpacity: 0.05,
+          shadowRadius: 10,
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          fontWeight: '600',
+          marginTop: 4,
         },
       }}>
 
+      {/* 1. Discover Tab */}
       <Tabs.Screen
         name="index"
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
-              <Ionicons name={focused ? 'compass' : 'compass-outline'} size={26} color={color} />
-              {/* Premium Touch: Tiny dot indicator instead of a bulky label */}
-              {focused && <View className="w-1 h-1 bg-[#1F2937] rounded-full mt-1.5" />}
-            </View>
+          title: 'Discover',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="compass" size={size} color={color} />
           ),
         }}
       />
 
+      {/* 2. Dashboard Tab */}
       <Tabs.Screen
         name="dashboard"
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
-              <Ionicons name={focused ? 'grid' : 'grid-outline'} size={26} color={color} />
-              {focused && <View className="w-1 h-1 bg-[#1F2937] rounded-full mt-1.5" />}
-            </View>
+          title: 'Sessions',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="calendar" size={size} color={color} />
           ),
         }}
       />
 
+      {/* 3. Find Expert Tab */}
+      <Tabs.Screen
+        name="mentors"
+        options={{
+          title: 'Find Expert',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="search" size={size} color={color} />
+          ),
+        }}
+      />
+
+      {/* 4. Profile Tab */}
       <Tabs.Screen
         name="profile"
         options={{
-          tabBarIcon: ({ color, focused }) => (
-            <View className="items-center">
-              <Ionicons name={focused ? 'person' : 'person-outline'} size={26} color={color} />
-              {focused && <View className="w-1 h-1 bg-[#1F2937] rounded-full mt-1.5" />}
-            </View>
+          title: 'Profile',
+          tabBarIcon: ({ color, size }) => (
+            <Ionicons name="person-circle-outline" size={size + 2} color={color} />
           ),
         }}
       />

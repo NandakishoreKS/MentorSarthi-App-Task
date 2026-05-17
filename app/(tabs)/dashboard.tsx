@@ -1,149 +1,164 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useState } from 'react';
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { Image, ScrollView, Text, TouchableOpacity, View } from 'react-native';
+import Animated, { FadeInDown, useAnimatedStyle, useSharedValue, withSpring, withTiming } from 'react-native-reanimated';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { usePushNotifications } from '../../hooks/usePushNotifications';
 
-// --- Mock Data ---
-const MENTEE_UPCOMING = { mentor: "Pradeep Yuvaraj", title: "Business Storytelling", date: "Tomorrow, 10:00 AM", status: "Confirmed", avatar: "https://i.pravatar.cc/150?u=pradeep" };
-const MENTEE_PAST = [{ id: 1, mentor: "Vivek Pawar", title: "Leadership Scaling", date: "12 Apr 2026", avatar: "https://i.pravatar.cc/150?u=vivek" }];
-const MENTOR_REQUESTS = [{ id: 1, mentee: "Rahul S.", topic: "Pitch Deck Review", time: "Wed, 2:00 PM", avatar: "https://i.pravatar.cc/150?u=rahul" }];
+const UPCOMING_SESSIONS = [
+    { id: 1, mentorName: "Vivek Pawar", mentorTitle: "Leadership & Tech", date: "Tomorrow, 20 Apr", time: "11:30 AM", avatar: "https://i.pravatar.cc/150?u=vivek" }
+];
+
+const PAST_SESSIONS = [
+    { id: 2, mentorName: "Pradeep Yuvaraj", mentorTitle: "Business Storytelling & Pitch", date: "12 Apr 2026", time: "02:00 PM", avatar: "https://i.pravatar.cc/150?u=pradeep", reviewed: false }
+];
 
 export default function DashboardScreen() {
-    const [activeTab, setActiveTab] = useState<'Mentee' | 'Mentor'>('Mentee');
+    const { expoPushToken } = usePushNotifications();
+    const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
+
+    // --- ANIMATION ENGINE ---
+    const toastY = useSharedValue(-150);
+    const toastX = useSharedValue(0);
+    const toastScale = useSharedValue(1);
+    const toastOpacity = useSharedValue(0);
+
+    useEffect(() => {
+        setTimeout(() => {
+            toastY.value = withSpring(20, { damping: 12, stiffness: 90 });
+            toastOpacity.value = withTiming(1, { duration: 300 });
+        }, 1000);
+
+        setTimeout(() => {
+            // Tuned coordinates to suck into the bell icon
+            toastY.value = withTiming(-80, { duration: 600 });
+            toastX.value = withTiming(160, { duration: 600 });
+            toastScale.value = withTiming(0.02, { duration: 600 });
+            toastOpacity.value = withTiming(0, { duration: 500 });
+        }, 4000);
+
+        setTimeout(() => {
+            toastY.value = -150;
+            toastX.value = 0;
+            toastScale.value = 1;
+        }, 5000);
+    }, []);
+
+    const animatedToastStyle = useAnimatedStyle(() => ({
+        transform: [
+            { translateY: toastY.value },
+            { translateX: toastX.value },
+            { scale: toastScale.value }
+        ],
+        opacity: toastOpacity.value,
+        position: 'absolute',
+        top: 50,
+        left: 24,
+        right: 24,
+        zIndex: 100,
+    }));
 
     return (
-        <SafeAreaView className="flex-1 bg-[#F9F5FF]">
+        <SafeAreaView className="flex-1 bg-[#FAFAFA]" edges={['top']}>
 
-            {/* --- Header --- */}
-            <View className="px-6 pt-4 pb-6 bg-white shadow-sm shadow-gray-200 z-10 rounded-b-3xl">
-                <Text className="text-2xl font-bold text-[#1F2937] mb-5">My Dashboard</Text>
+            <Animated.View style={animatedToastStyle} className="bg-[#1F2937] p-4 rounded-3xl shadow-2xl flex-row items-center border border-gray-700">
+                <View className="w-12 h-12 bg-[#6B46C1] rounded-full items-center justify-center mr-4">
+                    <Ionicons name="checkmark-done" size={24} color="white" />
+                </View>
+                <View className="flex-1">
+                    <Text className="text-white font-bold text-base">Booking Confirmed!</Text>
+                    <Text className="text-gray-300 text-xs mt-0.5">Vivek Pawar accepted your session.</Text>
+                </View>
+            </Animated.View>
 
-                {/* --- BULLETPROOF SEGMENTED CONTROL --- */}
-                <View className="flex-row bg-gray-100 p-1 rounded-xl">
-                    <TouchableOpacity
-                        onPress={() => setActiveTab('Mentee')}
-                        className="flex-1 py-2.5 items-center rounded-lg"
-                        style={activeTab === 'Mentee' ? { backgroundColor: '#ffffff', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 } : {}}
-                    >
-                        <Text className="font-bold" style={{ color: activeTab === 'Mentee' ? '#6B46C1' : '#6B7280' }}>
-                            Mentee View
-                        </Text>
+            <View className="px-6 pt-6 pb-4 bg-[#FAFAFA] z-10 flex-row justify-between items-end">
+                <Text className="text-3xl font-extrabold text-[#1F2937] tracking-tight">Your Sessions</Text>
+
+                <TouchableOpacity className="bg-white p-3 rounded-full shadow-sm shadow-gray-200/50 relative border border-gray-100">
+                    <Ionicons name="notifications-outline" size={22} color="#1F2937" />
+                    <View className="absolute top-2 right-2 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                </TouchableOpacity>
+            </View>
+
+            <View className="px-6 mb-6">
+                <View className="flex-row bg-[#F3F4F6] p-1 rounded-2xl">
+                    <TouchableOpacity onPress={() => setActiveTab('upcoming')} className={`flex-1 py-3 rounded-xl items-center ${activeTab === 'upcoming' ? 'bg-white shadow-sm shadow-gray-200' : 'bg-transparent'}`}>
+                        <Text className={`font-bold ${activeTab === 'upcoming' ? 'text-[#1F2937]' : 'text-gray-500'}`}>Upcoming</Text>
                     </TouchableOpacity>
-
-                    <TouchableOpacity
-                        onPress={() => setActiveTab('Mentor')}
-                        className="flex-1 py-2.5 items-center rounded-lg"
-                        style={activeTab === 'Mentor' ? { backgroundColor: '#ffffff', elevation: 2, shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2 } : {}}
-                    >
-                        <Text className="font-bold" style={{ color: activeTab === 'Mentor' ? '#6B46C1' : '#6B7280' }}>
-                            Mentor View
-                        </Text>
+                    <TouchableOpacity onPress={() => setActiveTab('past')} className={`flex-1 py-3 rounded-xl items-center ${activeTab === 'past' ? 'bg-white shadow-sm shadow-gray-200' : 'bg-transparent'}`}>
+                        <Text className={`font-bold ${activeTab === 'past' ? 'text-[#1F2937]' : 'text-gray-500'}`}>Past</Text>
                     </TouchableOpacity>
                 </View>
             </View>
 
-            {/* --- Main Content Area --- */}
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ padding: 24, paddingBottom: 40 }}>
+            <ScrollView className="flex-1 px-6" showsVerticalScrollIndicator={false} contentContainerStyle={{ paddingBottom: 120 }}>
 
-                {/* ========================================== */}
-                {/* MENTEE VIEW                  */}
-                {/* ========================================== */}
-                {activeTab === 'Mentee' && (
+                {activeTab === 'upcoming' && (
                     <View>
-                        <Text className="text-lg font-bold text-[#1F2937] mb-4">Upcoming Session</Text>
-                        <View className="bg-[#1e1b4b] rounded-3xl p-5 mb-8 shadow-md shadow-indigo-200">
-                            <View className="flex-row justify-between items-start mb-4">
-                                <View className="bg-[#6B46C1] px-3 py-1 rounded-full border border-purple-400">
-                                    <Text className="text-white text-xs font-bold">{MENTEE_UPCOMING.status}</Text>
+                        {UPCOMING_SESSIONS.length > 0 ? (
+                            UPCOMING_SESSIONS.map((session, index) => (
+                                <Animated.View key={session.id} entering={FadeInDown.delay(index * 150).duration(500).springify()} className="bg-white p-6 rounded-3xl shadow-sm shadow-gray-200/50 mb-6 border border-gray-50">
+                                    <View className="flex-row items-center justify-between mb-5">
+                                        <View className="bg-purple-50 px-4 py-2 rounded-xl flex-row items-center border border-purple-100/50">
+                                            <Ionicons name="calendar" size={16} color="#6B46C1" />
+                                            <Text className="text-[#6B46C1] font-bold ml-2">{session.date} • {session.time}</Text>
+                                        </View>
+                                        <TouchableOpacity className="bg-gray-50 p-2 rounded-full">
+                                            <Ionicons name="ellipsis-horizontal" size={20} color="#9CA3AF" />
+                                        </TouchableOpacity>
+                                    </View>
+
+                                    <View className="flex-row items-center mb-6">
+                                        <Image source={{ uri: session.avatar }} className="w-16 h-16 rounded-full bg-gray-100" />
+                                        <View className="ml-4 flex-1">
+                                            <Text className="text-xl font-bold text-[#1F2937] tracking-tight">{session.mentorName}</Text>
+                                            <Text className="text-sm text-gray-500 font-medium mt-1">{session.mentorTitle}</Text>
+                                        </View>
+                                    </View>
+
+                                    <View className="flex-row mt-2">
+                                        <TouchableOpacity className="flex-1 bg-[#6B46C1] py-4 rounded-2xl items-center flex-row justify-center shadow-lg shadow-purple-200">
+                                            <Ionicons name="videocam" size={20} color="#FFFFFF" className="mr-2" />
+                                            <Text className="text-white font-bold ml-1 text-base tracking-wide">Join Call</Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                </Animated.View>
+                            ))
+                        ) : (
+                            <Animated.View entering={FadeInDown.duration(500)} className="py-16 items-center justify-center border border-dashed border-gray-200 rounded-3xl bg-white/50">
+                                <View className="w-20 h-20 bg-gray-50 rounded-full items-center justify-center mb-4">
+                                    <Ionicons name="calendar-outline" size={32} color="#D1D5DB" />
                                 </View>
-                                <TouchableOpacity className="bg-white/20 p-2 rounded-full">
-                                    <Ionicons name="ellipsis-horizontal" size={16} color="white" />
-                                </TouchableOpacity>
-                            </View>
-
-                            <View className="flex-row items-center mb-4">
-                                <Image source={{ uri: MENTEE_UPCOMING.avatar }} className="w-14 h-14 rounded-xl mr-4 border border-white/20" />
-                                <View>
-                                    <Text className="text-white font-bold text-lg">{MENTEE_UPCOMING.mentor}</Text>
-                                    <Text className="text-indigo-200 text-sm mt-1">{MENTEE_UPCOMING.title}</Text>
-                                </View>
-                            </View>
-
-                            <View className="flex-row items-center mb-2">
-                                <Ionicons name="calendar" size={16} color="#FBBF24" />
-                                <Text className="text-white ml-2 font-medium">{MENTEE_UPCOMING.date}</Text>
-                            </View>
-
-                            {/* NEW: Action Buttons Row with Reschedule */}
-                            <View className="flex-row justify-between items-center mt-4 border-t border-white/10 pt-4">
-                                <TouchableOpacity className="bg-white/10 px-4 py-2.5 rounded-xl border border-white/20">
-                                    <Text className="text-white font-medium text-sm">Reschedule</Text>
-                                </TouchableOpacity>
-
-                                <TouchableOpacity className="bg-[#FBBF24] px-5 py-2.5 rounded-xl flex-row items-center shadow-sm shadow-yellow-900/20">
-                                    <Ionicons name="videocam" size={16} color="#1F2937" className="mr-2" />
-                                    <Text className="text-[#1F2937] font-bold text-sm">Join Call</Text>
-                                </TouchableOpacity>
-                            </View>
-                        </View>
-
-                        <Text className="text-lg font-bold text-[#1F2937] mb-4">Past Sessions</Text>
-                        {MENTEE_PAST.map((session) => (
-                            <View key={session.id} className="bg-white rounded-2xl p-4 mb-3 flex-row items-center border border-gray-100 shadow-sm shadow-gray-100">
-                                <Image source={{ uri: session.avatar }} className="w-12 h-12 rounded-full mr-4 bg-gray-50" />
-                                <View className="flex-1">
-                                    <Text className="font-bold text-[#1F2937] text-base">{session.mentor}</Text>
-                                    <Text className="text-gray-500 text-xs mt-1">{session.date} • {session.title}</Text>
-                                </View>
-                                <TouchableOpacity className="bg-purple-50 px-3 py-2 rounded-lg">
-                                    <Text className="text-[#6B46C1] font-bold text-xs">Book Again</Text>
-                                </TouchableOpacity>
-                            </View>
-                        ))}
+                                <Text className="text-[#1F2937] font-bold text-lg">No upcoming sessions</Text>
+                            </Animated.View>
+                        )}
                     </View>
                 )}
 
-                {/* ========================================== */}
-                {/* MENTOR VIEW                  */}
-                {/* ========================================== */}
-                {activeTab === 'Mentor' && (
+                {activeTab === 'past' && (
                     <View>
-                        <Text className="text-lg font-bold text-[#1F2937] mb-4">Pending Requests</Text>
-                        {MENTOR_REQUESTS.map((req) => (
-                            <View key={req.id} className="bg-white rounded-3xl p-5 mb-5 border border-gray-100 shadow-sm shadow-gray-200">
-                                <View className="flex-row items-center mb-4">
-                                    <Image source={{ uri: req.avatar }} className="w-12 h-12 rounded-full mr-4 bg-gray-50" />
-                                    <View className="flex-1">
-                                        <Text className="font-bold text-[#1F2937] text-lg">{req.mentee}</Text>
-                                        <Text className="text-[#6B46C1] text-sm font-medium mt-1">{req.topic}</Text>
-                                    </View>
-                                    <View className="bg-yellow-50 px-2 py-1 rounded-md">
-                                        <Text className="text-yellow-700 text-xs font-bold">New</Text>
+                        {PAST_SESSIONS.map((session, index) => (
+                            <Animated.View key={session.id} entering={FadeInDown.delay(index * 100).duration(400)} className="bg-white p-5 rounded-3xl shadow-sm shadow-gray-200/50 mb-4 flex-row items-center justify-between border border-gray-50">
+                                <View className="flex-row items-center flex-1">
+                                    <Image source={{ uri: session.avatar }} className="w-14 h-14 rounded-full bg-gray-100 opacity-80" />
+                                    <View className="ml-4 flex-1 pr-2">
+                                        <Text className="text-base font-bold text-[#1F2937]" numberOfLines={1}>{session.mentorName}</Text>
+                                        <Text className="text-xs text-gray-400 mt-1">{session.date}</Text>
                                     </View>
                                 </View>
-
-                                <View className="flex-row items-center mb-5 bg-gray-50 p-3 rounded-xl">
-                                    <Ionicons name="time-outline" size={18} color="#6B7280" />
-                                    <Text className="text-[#1F2937] font-medium ml-2">Requested Time: {req.time}</Text>
-                                </View>
-
-                                <View className="flex-row justify-between space-x-3">
-                                    <TouchableOpacity className="flex-1 py-3 items-center rounded-xl border border-gray-200 bg-white">
-                                        <Text className="text-gray-600 font-bold">Decline</Text>
+                                {!session.reviewed ? (
+                                    <TouchableOpacity className="bg-yellow-50 px-4 py-2.5 rounded-xl border border-yellow-100">
+                                        <Text className="text-yellow-700 font-bold text-xs tracking-wide">Leave Review</Text>
                                     </TouchableOpacity>
-                                    <TouchableOpacity className="flex-1 py-3 items-center rounded-xl bg-[#6B46C1] shadow-md shadow-purple-200">
-                                        <Text className="text-white font-bold">Accept Request</Text>
+                                ) : (
+                                    <TouchableOpacity className="bg-gray-50 px-4 py-2.5 rounded-xl border border-gray-100">
+                                        <Text className="text-[#1F2937] font-bold text-xs tracking-wide">Book Again</Text>
                                     </TouchableOpacity>
-                                </View>
-                            </View>
+                                )}
+                            </Animated.View>
                         ))}
-
-                        <TouchableOpacity className="mt-4 border border-dashed border-gray-300 rounded-2xl py-6 items-center bg-gray-50">
-                            <Ionicons name="calendar-outline" size={24} color="#9CA3AF" />
-                            <Text className="text-gray-500 font-medium mt-2">Manage Availability Calendar</Text>
-                        </TouchableOpacity>
                     </View>
                 )}
-
             </ScrollView>
         </SafeAreaView>
     );
