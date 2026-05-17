@@ -1,43 +1,48 @@
-# MentorSarthi Mobile App 🚀
+# 🚀 MentorSarthi App (Frontend Architecture Sprint)
 
-A high-fidelity, cross-platform mobile application built for the Enorvia Global Week 1 Internship Task. This application provides a modern UI/UX for mentees to discover, book, and manage 1:1 sessions with industry experts.
+A premium, role-based mobile application built with React Native and Expo. This project connects mentees with top industry experts for 1:1 guidance. 
 
-## 🛠️ Technical Stack
-* **Framework:** React Native / Expo
-* **Routing:** Expo Router (File-based navigation utilizing the `app/` directory)
-* **Styling:** NativeWind v4 (Tailwind CSS utility classes)
-* **Layouts:** `react-native-safe-area-context` for modern device notch/home-bar handling
+This repository reflects a major frontend architecture overhaul, transitioning the app from a flat prototype into a highly scalable, production-ready mobile application with premium Awwwards-inspired fluid animations, modular components, and native-thread performance.
 
-## ✨ Week 1 Features Implemented
-- **Onboarding & Auth:** Animated splash screen, Mentee/Mentor toggle UI, and simulated Razorpay-style checkout flow.
-- **Discovery Engine:** Horizontal scrolling category filters and vertical swipeable mentor cards.
-- **Dynamic Routing:** Profile screens that ingest dynamic parameters to display specific mentor data.
-- **Dual-Role Dashboards:** A custom segmented control to switch seamlessly between Mentee (upcoming/past sessions) and Mentor (pending requests) views.
-- **Notification Center:** A dedicated hub for session reminders, booking confirmations, and payment statuses.
+---
 
-## 🏗️ Architecture & Approach
-To ensure rapid UI development and strict adherence to brand guidelines, I integrated **NativeWind v4**, allowing for consistent padding, typography, and color themes (utilizing the brand's core `#6B46C1` and `#FBBF24` hex codes). 
+## ✨ Key Features & Milestones Achieved
 
-I opted for **Expo Router's** modern file-based routing over traditional React Navigation to provide superior deep-linking capabilities and a scalable architecture. The UI relies on functional components and local state management to handle complex layouts like the Mentor/Mentee dashboard toggle and active category states.
+* **Role-Based Routing:** Seamlessly separated navigation states for Mentors `(mentor-tabs)` and Mentees `(tabs)` using Expo Router's advanced group routing.
+* **Premium UI/UX:** Implemented a modern, minimalist design system using NativeWind v4 (Tailwind CSS) with perfect mobile layout proportions and safe-area handling across iOS and Android.
+* **Reusable Component Library:** Abstracted core UI elements (`PrimaryButton`, `InputField` with auto-password toggles) to ensure complete design consistency and rapid future development.
+* **Fluid Animations:** Integrated `react-native-reanimated` for buttery-smooth, native-thread animations, including staggered list fade-ins and custom in-app push notification toasts.
+* **Push Notification Infrastructure:** Built a robust, environment-aware custom hook (`usePushNotifications`) to safely request permissions and generate device tokens without crashing in Expo Go.
+* **Cross-Platform Parity:** Configured PostCSS and Metro bundler to ensure NativeWind classes render flawlessly on Web, iOS, and Android.
 
-## 🚀 How to Run Locally
+---
 
-1. **Clone the repository:**
-   ```bash
-   git clone [https://github.com/YOUR-USERNAME/MentorSarthi-App-Task.git](https://github.com/YOUR-USERNAME/MentorSarthi-App-Task.git)
+## 🛠 Tech Stack
 
-2. Install dependencies:
+* **Framework:** React Native / [Expo](https://expo.dev/) (SDK 53+)
+* **Navigation:** Expo Router (File-based routing)
+* **Styling:** NativeWind v4 (Tailwind CSS)
+* **Animations:** React Native Reanimated 3
+* **Icons:** Expo Vector Icons (Ionicons)
+* **Notifications:** Expo Notifications & Expo Device
 
-    Bash
-    npm install
+---
 
-3. Start the Expo server:
+## 📂 Project Architecture
 
-    Bash
-    npx expo start
+The codebase is organized for maximum scalability and readability:
 
-4. View the app: 
-
-    Press a to open in an Android Emulator, i for iOS Simulator, or scan the QR code with the Expo Go app on your physical device.
-
-Developed by Nandakishore for Enorvia Global.
+```text
+MentorSarthiApp/
+├── app/                      # Expo Router file-based routing
+│   ├── (auth)/               # Authentication flow (Login, Register)
+│   ├── (tabs)/               # Mentee bottom navigation (Dashboard, Find Expert)
+│   ├── (mentor-tabs)/        # Mentor bottom navigation (Requests, Earnings)
+│   ├── _layout.tsx           # Global app layout & routing config
+│   └── index.tsx             # Role-selection Welcome Screen
+├── components/               # Reusable UI components (Buttons, Inputs)
+├── hooks/                    # Custom React hooks (usePushNotifications)
+├── assets/                   # Static images and fonts
+├── global.css                # Tailwind CSS entry point for Web support
+└── tailwind.config.js        # NativeWind theme & design system config
+```
