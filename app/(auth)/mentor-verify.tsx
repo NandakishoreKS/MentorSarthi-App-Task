@@ -4,7 +4,7 @@ import { useRef, useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function VerifyScreen() {
+export default function MentorVerifyScreen() {
     const [otp, setOtp] = useState(['', '', '', '']);
     const inputs = useRef<(TextInput | null)[]>([]);
 
@@ -39,16 +39,16 @@ export default function VerifyScreen() {
                     <Ionicons name="mail-open-outline" size={28} color="#6B46C1" />
                 </View>
 
-                <Text className="text-3xl font-bold text-[#1F2937] mb-2">Verify Email</Text>
+                <Text className="text-3xl font-bold text-[#1F2937] mb-2">Verify Your Email</Text>
                 <Text className="text-base text-gray-500 mb-2 leading-relaxed">
                     We've sent a 4-digit verification code to{' '}
-                    <Text className="font-bold text-[#1F2937]">you@example.com</Text>
+                    <Text className="font-bold text-[#1F2937]">expert@example.com</Text>
                 </Text>
                 <Text className="text-sm text-gray-400 mb-10">
-                    After verifying, we'll personalise your experience.
+                    After verifying, you'll set up your mentor profile.
                 </Text>
 
-                {/* OTP inputs — now auto-advance between boxes */}
+                {/* OTP inputs */}
                 <View className="flex-row justify-between mb-10 px-2">
                     {otp.map((digit, idx) => (
                         <TextInput
@@ -69,15 +69,15 @@ export default function VerifyScreen() {
                     ))}
                 </View>
 
-                {/* ✅ KEY CHANGE: routes to mentee onboarding now */}
+                {/* Verify button */}
                 <TouchableOpacity
                     className={`w-full rounded-2xl py-4 items-center mb-6 ${isComplete ? 'bg-[#6B46C1]' : 'bg-gray-200'
                         }`}
-                    onPress={() => router.replace('/(auth)/mentee-onboard-1')}
+                    onPress={() => router.replace('/(auth)/mentor-onboard-1')}
                     disabled={!isComplete}
                 >
                     <Text className={`font-bold text-lg ${isComplete ? 'text-white' : 'text-gray-400'}`}>
-                        Verify & Continue
+                        Verify & Set Up Profile
                     </Text>
                 </TouchableOpacity>
 

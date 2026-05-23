@@ -27,9 +27,8 @@ export default function TabsLayout() {
           fontWeight: '600',
           marginTop: 4,
         },
-      }}>
-
-      {/* 1. Discover Tab */}
+      }}
+    >
       <Tabs.Screen
         name="index"
         options={{
@@ -39,8 +38,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-
-      {/* 2. Dashboard Tab */}
       <Tabs.Screen
         name="dashboard"
         options={{
@@ -50,8 +47,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-
-      {/* 3. Find Expert Tab */}
       <Tabs.Screen
         name="mentors"
         options={{
@@ -61,8 +56,6 @@ export default function TabsLayout() {
           ),
         }}
       />
-
-      {/* 4. Profile Tab */}
       <Tabs.Screen
         name="profile"
         options={{
@@ -72,6 +65,10 @@ export default function TabsLayout() {
           ),
         }}
       />
+
+      {/* Hidden screens — no tab bar entry */}
+      <Tabs.Screen name="settings" options={{ href: null }} />
+      <Tabs.Screen name="mentor/[id]" options={{ href: null }} />
     </Tabs>
   );
 }

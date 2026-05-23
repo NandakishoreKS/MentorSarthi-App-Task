@@ -46,7 +46,7 @@ export default function WelcomeScreen() {
 
                     {/* Mentor Option */}
                     <TouchableOpacity
-                        onPress={() => router.push('/(auth)/mentor-login')} // We will build this next
+                        onPress={() => router.push('/(auth)/mentor-register')} // We will build this next
                         className="w-full bg-white border-2 border-gray-100 p-5 rounded-3xl flex-row items-center justify-between mt-4"
                     >
                         <View className="flex-row items-center flex-1">

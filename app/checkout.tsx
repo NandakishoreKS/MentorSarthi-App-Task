@@ -12,7 +12,7 @@ export default function CheckoutScreen() {
         Alert.alert(
             "Booking Confirmed! 🎉",
             "Your mentorship session has been scheduled successfully. You will receive a calendar invite shortly.",
-            [{ text: "Go to Dashboard", onPress: () => router.push('/(tabs)/dashboard') }]
+            [{ text: "Go to Dashboard", onPress: () => router.push('/dashboard') }]
         );
     };
 

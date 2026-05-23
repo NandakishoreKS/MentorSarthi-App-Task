@@ -12,11 +12,19 @@ import PrimaryButton from '../../components/PrimaryButton';
 export default function LoginScreen() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
-    const handleLogin = () => {
-        // In a real app, you'd verify credentials here.
-        // For now, we'll route them to the mentee dashboard.
-        router.replace('/(tabs)');
+    const handleLogin = async () => {
+        setIsSubmitting(true);
+        try {
+            // In a real app, you'd verify credentials here.
+            // For now, we'll route them to the mentee dashboard.
+            router.replace('/(tabs)');
+        } catch (error) {
+            console.error('Login error:', error);
+        } finally {
+            setIsSubmitting(false);
+        }
     };
 
     return (
@@ -75,7 +83,13 @@ export default function LoginScreen() {
                             onPress={handleLogin}
                             variant="dark"
                         />
-
+                        {/* Add this block right after the PrimaryButton */}
+                        <View className="flex-row justify-center items-center mt-6">
+                            <Text className="text-gray-500">Don't have an account? </Text>
+                            <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
+                                <Text className="text-[#6B46C1] font-bold">Create Account</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
 
                 </ScrollView>
